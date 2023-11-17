@@ -1,0 +1,26 @@
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'ocr_app/style.css' %}">
+</head>
+<body>
+    <h1>{{title}}</h1>
+    <div>
+        <h2>PDF ファイルの画像</h2>
+        <a href="/{{imgfile}}">"/{{imgfile}}"</a>
+
+        <p>OCR結果:</p>
+        <ul>
+            <li>
+                <p style="white-space:pre-wrap;">{{ document }}</p>
+            </li>
+        </ul>
+        <p>エクセル出力結果
+        <a href="/{{xlsfile}}">"/{{xlsfile}}"</a>
+        </p>
+    </div>
+</body>
+</html>

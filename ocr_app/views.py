@@ -121,9 +121,9 @@ def process_image(request):
         i = 1
         nrow = len(document)
         for text in document:
-            text.replace('l', '')
-            text.replace(', ', ',')
-            text.replace('],','1,')
+            text=text.replace('l', '')
+            text=text.replace(', ', ',')
+            text=text.replace('],','1,')
             ws.cell(row=row, column=1).value = row-3
             text =text.split()
             j=2

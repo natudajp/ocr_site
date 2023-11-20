@@ -124,6 +124,7 @@ def process_image(request):
             text=text.replace('l', '')
             text=text.replace(', ', ',')
             text=text.replace('],','1,')
+            text=text.replace('|','')
             ws.cell(row=row, column=1).value = row-3
             text =text.split()
             j=2

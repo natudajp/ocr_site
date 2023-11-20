@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http.response import HttpResponse
 import io
 from PIL import Image
-from pdf2image import convert_from_path
+from pdf2image import convert_from_path,convert_from_bytes
 
 
 # Create your views here.
@@ -83,11 +83,14 @@ def process_image(request):
         #angle=-90
         #angle=0
         if ext=='.pdf':
-            with open(os.path.join(settings.BASE_DIR, 'media/pdf/tmp2.pdf'), 'wb+') as f:    #3
+            with open(os.path.join(settings.BASE_DIR, 'media/pdf/tmp.pdf'), 'wb+') as f:    #3
                 for chunk in upload.chunks():
                     f.write(chunk)
             #pdf_file = open(os.path.join(settings.BASE_DIR, 'media/pdf/tmp.pdf'), 'r')
-            org_img = convert_from_path('media/pdf/tmp2.pdf', fmt='jpg', dpi=200)[0]
+            org_img=convert_from_path(os.path.join(settings.BASE_DIR, 'media/pdf/tmp.pdf'), fmt='jpg', dpi=200)[0]
+            #org_img = convert_from_path('media/pdf/tmp2.pdf', fmt='jpg', dpi=200)[0]
+            org_img2 = convert_from_bytes(open(os.path.join(settings.BASE_DIR, 'media/pdf/tmp.pdf'), 'rb').read())[0]
+            org_img2.save(os.path.join(settings.BASE_DIR, 'media/img/tmp2.jpg'))
             img = org_img.rotate(angle, expand=True)
             img.save(os.path.join(settings.BASE_DIR, 'media/img/tmp.jpg'))
             imgfile = 'media/img/tmp.jpg'

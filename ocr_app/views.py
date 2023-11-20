@@ -124,6 +124,7 @@ def process_image(request):
         i = 1
         nrow = len(document)
         for text in document:
+            text=text.replace('、', ',')
             text=text.replace('l', '')
             text=text.replace(', ', ',')
             text=text.replace('],','1,')

@@ -89,8 +89,8 @@ def process_image(request):
             #pdf_file = open(os.path.join(settings.BASE_DIR, 'media/pdf/tmp.pdf'), 'r')
             org_img=convert_from_path(os.path.join(settings.BASE_DIR, 'media/pdf/tmp.pdf'), fmt='jpg', dpi=200)[0]
             #org_img = convert_from_path('media/pdf/tmp2.pdf', fmt='jpg', dpi=200)[0]
-            org_img2 = convert_from_bytes(open(os.path.join(settings.BASE_DIR, 'media/pdf/tmp.pdf'), 'rb').read())[0]
-            org_img2.save(os.path.join(settings.BASE_DIR, 'media/img/tmp2.jpg'))
+            #org_img2 = convert_from_bytes(open(os.path.join(settings.BASE_DIR, 'media/pdf/tmp.pdf'), 'rb').read())[0]
+            #org_img2.save(os.path.join(settings.BASE_DIR, 'media/img/tmp2.jpg'))
             img = org_img.rotate(angle, expand=True)
             img.save(os.path.join(settings.BASE_DIR, 'media/img/tmp.jpg'))
             imgfile = 'media/img/tmp.jpg'
@@ -100,7 +100,7 @@ def process_image(request):
         else:
             img=Image.open(upload)
         #'''
-        tesseract_path = "C:\Program Files\Tesseract-OCR"
+        tesseract_path = r"C:\Program Files\Tesseract-OCR"
         if tesseract_path not in os.environ["PATH"].split(os.pathsep):
             os.environ["PATH"] += os.pathsep+tesseract_path
             
@@ -110,9 +110,12 @@ def process_image(request):
         builder = pyocr.builders.LineBoxBuilder(tesseract_layout=6)
         #document = tools[0].image_to_string(img, lang="jpn", builder=builder)
         document = tools[0].image_to_string(img, lang="jpn")
-        document.replace("|", "")
-        document.replace(", ", ",")
-        document.replace("],", "1,")
+        document=document.replace('、', ',')
+        document=document.replace("|", "")
+        document=document.replace(", ", ",")
+        document=document.replace("],", "1,")
+        document=document.replace('],','1,')
+        
 
         import openpyxl as px
         import datetime
@@ -139,9 +142,16 @@ def process_image(request):
         dt =datetime.datetime.now()
         dtime = dt.strftime('%Y%m%d-%H%M%S')
         xlsfile = 'media/excel/ocr-result.xlsx'
-        wb.save(xlsfile)
+        #wb.save(xlsfile)
+        
+        # Excelを返すためにcontent_typeに「application/vnd.ms-excel」をセットします。
+        response = HttpResponse(content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename=%s' % 'ocr-result.xlsx'
 
-        response_data['document'] = document
+        # データの書き込みを行なったExcelファイルを保存する
+        wb.save(response)
+        
+        return response
 
         #return JsonResponse(response_data)
         #return HttpResponse(response_data,'ocrz_list.html')
@@ -156,7 +166,36 @@ def process_image(request):
                 #'result_url': upload_image.result.url,
                 'imgfile': imgfile,            
                 'document': document,
-                'xlsfile': xlsfile
+                'response': response
         }
         
     return render(request, 'ocr_app/ocrz_ocr.html', params)
+
+#https://awstip.com/django-data-export-generating-csv-and-excel-files-for-user-downloads-a18b14388c9f
+import openpyxl
+from django.http import HttpResponse
+
+def export_excel(request):
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="mydata.xlsx"'
+
+    workbook = openpyxl.Workbook()
+    worksheet = workbook.active
+    worksheet.title = 'My Data'
+
+    # Write header row
+    header = ['ID', 'Name', 'Email']
+    for col_num, column_title in enumerate(header, 1):
+        cell = worksheet.cell(row=1, column=col_num)
+        cell.value = column_title
+
+    # Write data rows
+    queryset = MyModel.objects.all().values_list('id', 'name', 'email')
+    for row_num, row in enumerate(queryset, 1):
+        for col_num, cell_value in enumerate(row, 1):
+            cell = worksheet.cell(row=row_num+1, column=col_num)
+            cell.value = cell_value
+
+    workbook.save(response)
+
+    return response

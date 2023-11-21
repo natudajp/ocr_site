@@ -22,5 +22,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("ocrapp/", include("ocr_app.urls")),
+    path('excelapp/', include('excelapp.urls')),   # ←ここを追加  
+    
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -43,7 +43,7 @@
 </head>
 <body>
     <div style="text-align: center;">
-        <h2>PDFファイルの文字認識とエクセル出力</h2>
+        <h2>イメージあるいはPDFファイルの文字認識とエクセル出力</h2>
         <br>
     <form enctype="multipart/form-data" id="ocrForm" action="{% url 'process_image' %}" method="post"> <!-- Do not forget to add: enctype="multipart/form-data" -->
         {% csrf_token %}
@@ -51,10 +51,12 @@
         <br><br>
         {{ choiceform}}
         <br><br>
+        {{ outputform}}
+        <br><br>
         <button type="submit" class="btn btn-success">OCRの実行</button>
     </form>
     <br>
-    <h3>（１）pdfファイルを選択し、（２）必要ならば、図形の回転を指示して（３）OCRの実行ボタンを押すと文字認識を実行し、EXCELに出力します。</h3>
+    <h3>（１）イメージファイル（png/jpg)あるいはpdfファイルを選択し、（２）必要ならば、図形の回転を指示して（３）OCRの実行ボタンを押すと文字認識を実行し、EXCELに出力します。</h3>
 
     <br><br><hr>
     <div id="content" style="width: 50%; margin: 0 auto;">

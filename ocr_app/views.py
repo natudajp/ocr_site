@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 import pytesseract    # ======= > Add
 from PIL import Image
-from .forms import UploadFileForm, RotateChoiceForm
+from .forms import UploadFileForm, RotateChoiceForm, OutputChoiceForm
 
 def index(request):
     return HttpResponse("Hello, world!! at ocr_app's index page.")
@@ -24,23 +24,34 @@ def HomeView(request):
         return render(request, 'ocr_app/ocrz_index.html', {
             'form': UploadFileForm(),
             'choiceform': RotateChoiceForm(),
+            'outputform': OutputChoiceForm(),
         })
     elif request.method == 'POST':
         form = UploadFileForm(request.POST)
         choiceform = RotateChoiceForm(request.POST)
+        outputform = OutputChoiceForm(request.POST)
         if not form.is_valid():
             return render(request, 'ocr_app/ocrz_index.html', {
                 'form': form,
                 'choiceform': choiceform,
+                'outputform': outputform,
             })
         if not choiceform.is_valid():
             return render(request, 'ocr_app/ocrz_index.html', {
                 'form': form,
                 'choiceform': choiceform,
+                'outputform': outputform,
+            })
+        if not outputform.is_valid():
+            return render(request, 'ocr_app/ocrz_index.html', {
+                'form': form,
+                'choiceform': choiceform,
+                'outputform': outputform,
             })
         file = form.cleaned_data['file']
         rotate=choiceform.cleaned_data['angle']
-        return HttpResponse(rotate)           
+        output=outputform.cleaned_data['output']
+        return HttpResponse(rotate,output)           
 
 import os
 import pyocr
@@ -49,19 +60,28 @@ from django.conf import settings
 # https://yu-nix.com/archives/django-choicefield/      
 from django.shortcuts import render
 from django.http import HttpResponse
-from .forms import UploadFileForm, RotateChoiceForm
+from .forms import UploadFileForm, RotateChoiceForm, OutputChoiceForm
 
 @csrf_exempt
 def process_image(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST)
         choiceform = RotateChoiceForm(request.POST)
+        outputform = OutputChoiceForm(request.POST)
         if not choiceform.is_valid():
             return render(request, 'ocr_app/ocrz_index.html', {
                 'form': form,
                 'choiceform': choiceform,
+                'outputform': outputform,
             })
+        if not outputform.is_valid():
+            return render(request, 'ocr_app/ocrz_index.html', {
+                'form': form,
+                'choiceform': choiceform,
+                'outputform': outputform,
+        })
         rotate = choiceform.cleaned_data['angle']
+        output=outputform.cleaned_data['output']
         if rotate == 'left':
             angle=90
         elif rotate == 'right':
@@ -151,7 +171,8 @@ def process_image(request):
         # データの書き込みを行なったExcelファイルを保存する
         wb.save(response)
         
-        return response
+        if output=='excel':
+            return response
 
         #return JsonResponse(response_data)
         #return HttpResponse(response_data,'ocrz_list.html')

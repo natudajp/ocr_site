@@ -1,0 +1,25 @@
+<!doctype html>
+{% load static %}
+<html lang="ja">
+<head>
+    <meta charset ="utf-8">
+    <title>文字認識システム</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link href="//fonts.googleapis.com/css?family=Zen Antique&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="page-header">
+        <h1><a href="/">文字認識</a></h1>
+    </div>
+    <br><br>
+    <div class="ocr">
+        <a href="{% url 'ocrz' %}">スキャンしたPDFの文字認識</a>
+        <br><br>
+        <a href="{% url 'ocrz' %}">イメージデータの文字認識</a>
+        <br><br>
+        <a href="{% url 'pdfz' %}">テキストが埋め込まれたPDFの処理</a>
+    </div>
+</body>
+</html>

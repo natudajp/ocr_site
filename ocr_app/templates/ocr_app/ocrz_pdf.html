@@ -9,18 +9,18 @@
 <body>
     <h1>{{title}}</h1>
     <div>
-        <h2>PDF ファイルの画像</h2>
+        <h2>PDFからテキストの抽出</h2>
         <!--<a href="/{{imgfile}}">"/{{imgfile}}"</a>-->
-        <img src="/media/img/tmp.jpg" class="image-50vw"/>
+        <img src="/media/pdf/tmp3.pdf" class="image-50vw"/>
 
-        <p>OCR結果:</p>
+        <p>テキスト抽出結果:</p>
         <ul>
             <li>
                 <p style="white-space:pre-wrap;">{{ document }}</p>
             </li>
         </ul>
-        <p>エクセル出力結果
-            <a href="{% url 'ocrz' %}">戻る</a>
+        <p>
+            <a href="{% url 'pdfz' %}">戻る</a>
         </p>
     </div>
 </body>

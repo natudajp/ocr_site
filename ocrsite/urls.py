@@ -19,9 +19,11 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("ocrapp/", include("ocr_app.urls")),
+    path("", include("ocr_app.urls")),
+    #path("ocrapp/", include("ocr_app.urls")),
     path('excelapp/', include('excelapp.urls')),   # ←ここを追加  
     
 ]

@@ -1,0 +1,73 @@
+<script>
+    $(document).ready(function(){ 
+        function submitFile(){
+            var fd = new FormData();
+            fd.append('file', getFile())
+            $.ajax({
+                url: "{% url 'process_pdf' %}",
+                type: "POST",
+                data: fd,
+                processData: false,
+                contentType: false,
+                success: function(data){
+                    // console.log(data.content);
+                    if(data.content){
+                        $('#content').html(
+                            "<p>" + data.content + "</p>"
+                        )
+                    }  
+                }
+            })
+        }
+
+        function getFile(){
+            var fp = $("#file_id")
+            var item = fp[0].files
+            return item[0]
+        }
+
+        // Submit the file for OCRization
+        $("#ocrForm").on('submit', function(event){
+            event.preventDefault();
+            submitFile()
+        })
+    });
+</script>
+
+<!doctype html>
+{% load static %}
+<html lang="ja">
+<head>
+    <meta charset ="utf-8">
+    <title>Extract Text from Pdf</title>
+</head>
+<body>
+    <div style="text-align: center;">
+        <h2>Pdfファイルからテキスト抽出</h2>
+        <br>
+    <form enctype="multipart/form-data" id="ocrForm" action="{% url 'process_pdf' %}" method="post"> <!-- Do not forget to add: enctype="multipart/form-data" -->
+        {% csrf_token %}
+        {{ form }}
+        <br><br>
+        <button type="submit" class="btn btn-success">テキスト抽出の実行</button>
+    </form>
+    <br>
+    <h3>（説明）Pdfファイルに埋め込まれているテキストを抽出します。</h3>
+
+    <br><br><hr>
+    <div id="content" style="width: 50%; margin: 0 auto;">
+        
+    </div>
+    <div>
+        <p>
+            <h2>補足</h2>
+            <h3> スキャンしたPDFファイルの処理は<a href="{% url 'ocrz' %}">こちらです。</a></h3>
+        </p>
+    </div>
+    <div>
+        <a href="{% url 'index' %}">戻る</a>
+    </div>
+
+</div>
+</body>
+</html>

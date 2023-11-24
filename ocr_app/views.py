@@ -17,7 +17,8 @@ from PIL import Image
 from .forms import UploadFileForm, RotateChoiceForm, OutputChoiceForm
 
 def index(request):
-    return HttpResponse("Hello, world!! at ocr_app's index page.")
+    #return HttpResponse("Hello, world!! at ocr_app's index page.")
+    return render(request, 'ocr_app/index.html', {})
 
 def HomeView(request):
     if request.method == 'GET':
@@ -51,7 +52,21 @@ def HomeView(request):
         file = form.cleaned_data['file']
         rotate=choiceform.cleaned_data['angle']
         output=outputform.cleaned_data['output']
-        return HttpResponse(rotate,output)           
+        return HttpResponse(rotate,output)   
+
+def PDFZHome(request):
+    if request.method == 'GET':
+        return render(request, 'ocr_app/pdfz_index.html', {
+            'form': UploadFileForm(),
+        })
+    elif request.method == 'POST':
+        form = UploadFileForm(request.POST)
+        if not form.is_valid():
+            return render(request, 'ocr_app/pdfz_index.html', {
+                'form': form,
+            })
+        file = form.cleaned_data['file']
+        return HttpResponse()           
 
 import os
 import pyocr
@@ -220,3 +235,36 @@ def export_excel(request):
     workbook.save(response)
 
     return response
+
+from pypdf import PdfReader
+
+def process_pdf(request):
+
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST)
+    
+        upload = request.FILES['file']
+        
+        # ファイル名の取得
+        upload_file_name = upload.name
+
+        # 拡張子を除くファイル名(root)と拡張子(ext)の取得
+        root, ext = os.path.splitext(upload_file_name)
+
+        params={}
+
+        # PDFファイルの場合
+        if ext=='.pdf':
+            with open(os.path.join(settings.BASE_DIR, 'media/pdf/tmp3.pdf'), 'wb+') as f:    #3
+                for chunk in upload.chunks():
+                    f.write(chunk)
+            reader=PdfReader(os.path.join(settings.BASE_DIR, 'media/pdf/tmp3.pdf'))
+            page = reader.pages[0]
+            document = page.extract_text()
+
+            #params={}
+            params = {
+                'title': '文字抽出',    
+                'document': document,
+            }
+        return render(request, 'ocr_app/ocrz_pdf.html', params)

@@ -40,9 +40,11 @@
 <head>
     <meta charset ="utf-8">
     <title>OCR</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 </head>
 <body>
-    <div style="text-align: center;">
+    <div style="text-align: left;">
         <h2>イメージあるいはPDFファイルの文字認識とエクセル出力</h2>
         <br>
     <form enctype="multipart/form-data" id="ocrForm" action="{% url 'process_image' %}" method="post"> <!-- Do not forget to add: enctype="multipart/form-data" -->
@@ -56,9 +58,13 @@
         <button type="submit" class="btn btn-success">OCRの実行</button>
     </form>
     <br>
-    <h3>（１）イメージファイル（png/jpg)あるいはpdfファイルを選択し、（２）必要ならば、図形の回転を指示して（３）OCRの実行ボタンを押すと文字認識を実行し、EXCELに出力します。</h3>
+    <h3>（１）イメージファイル（png/jpg)あるいはpdfファイルを選択し、<br>（２）必要ならば、図形の回転を指示して<br>（３）OCRの実行ボタンを押すと文字認識を実行し、EXCELに出力します。</h3>
 
-    <br><br><hr>
+    <br><br>
+    <div>
+        <a href="{% url 'index' %}">戻る</a>
+    </div>
+    <hr>
     <div id="content" style="width: 50%; margin: 0 auto;">
         
     </div>
@@ -66,10 +72,15 @@
         <p>
             <h2>補足</h2>
             <h3>（１）対象：印刷された文書（FAXで送付された文書、印刷された伝票など）をスキャンして PDFファイルとして保存したデータです。</h3>
-            <h3>           クリックしてテキストが選択可能なPDFファイルは別途処理が必要です（追加予定）。</h3>
+            <h3>           クリックしてテキストが選択可能なPDFファイルは別途処理が必要です<a href="{% url 'pdfz' %}">ここです</a>。</h3>
             <h3>（２）図形の回転の意味：例えば右回転は下図の様な処理を行います。基本的には横方向に印刷されたイメージの文書を処理します。</h3>
         </p>
+        <div style="text-align: center;">
         <img src="{% static 'ocr_app/Right.JPG' %}">
+        </div>
+    </div>
+    <div>
+        <a href="{% url 'index' %}">戻る</a>
     </div>
 
 </div>

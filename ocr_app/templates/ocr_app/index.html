@@ -1,0 +1,12 @@
+{% extends 'ocr_app/base.html' %}
+
+{% block content %}
+    <div class="ocr">
+        <br><br>
+        <a href="{% url 'ocrz' %}">(1)-1: スキャンしたPDFの文字認識</a>
+        <br><br>
+        <a href="{% url 'ocrz' %}">(1)-2: イメージデータの文字認識</a>
+        <br><br>
+        <a href="{% url 'pdfz' %}">(2): テキストが埋め込まれたPDFの処理</a>
+    </div>
+{% endblock %}

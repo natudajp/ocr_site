@@ -135,11 +135,14 @@ def process_image(request):
         else:
             img=Image.open(upload)
         #'''
-        tesseract_path = r"C:\Program Files\Tesseract-OCR"
+        tesseract_path = "/usr/bin"
+        if os.name =='nt':
+            tesseract_path = r"C:\Program Files\Tesseract-OCR"
         if tesseract_path not in os.environ["PATH"].split(os.pathsep):
             os.environ["PATH"] += os.pathsep+tesseract_path
-            
-        pyocr.tesseract.TESSERACT_CMD = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+        pyocr.tesseract.TESSERACT_CMD = '/usr/bin/tesseract'
+        if os.name=='nt': 
+            pyocr.tesseract.TESSERACT_CMD = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
         tools = pyocr.get_available_tools()
 
         builder = pyocr.builders.LineBoxBuilder(tesseract_layout=6)
